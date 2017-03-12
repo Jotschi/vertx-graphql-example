@@ -1,0 +1,9 @@
+{ 
+	hero {
+		id,
+		name,
+		appearsIn { name },
+		friends  { name },
+		... on Droid { primaryFunction }
+	} 
+}
