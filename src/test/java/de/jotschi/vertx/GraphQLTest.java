@@ -3,8 +3,10 @@ package de.jotschi.vertx;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.vertx.core.Vertx;
@@ -15,11 +17,17 @@ import io.vertx.core.json.JsonObject;
 
 public class GraphQLTest {
 
+	private static Vertx vertx = null;
+
+	@BeforeClass
+	public static void setup() {
+		VertxOptions options = new VertxOptions();
+		vertx = Vertx.vertx(options);
+		vertx.deployVerticle(new GraphQLVerticle());
+	}
+
 	@Test
 	public void testQuery() throws InterruptedException, IOException {
-		VertxOptions options = new VertxOptions();
-		Vertx vertx = Vertx.vertx(options);
-		vertx.deployVerticle(new GraphQLVerticle());
 
 		HttpClient client = vertx.createHttpClient();
 		HttpClientRequest request = client.post(3000, "localhost", "/query");
@@ -33,7 +41,7 @@ public class GraphQLTest {
 		});
 		String query = readQuery("full-query");
 		request.end(query);
-		latch.await();
+		latch.await(5999, TimeUnit.SECONDS);
 	}
 
 	private String readQuery(String queryName) throws IOException {

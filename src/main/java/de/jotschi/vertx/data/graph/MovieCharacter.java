@@ -18,7 +18,7 @@ public class MovieCharacter extends AbstractInterceptingVertexFrame implements N
 	protected void init() {
 		super.init();
 	}
-	
+
 	public void setHome(Planet planet) {
 		setLinkOutTo(planet, HAS_HOME);
 	}
@@ -27,15 +27,23 @@ public class MovieCharacter extends AbstractInterceptingVertexFrame implements N
 		return out(HAS_HOME).nextOrDefaultExplicit(Planet.class, null);
 	}
 
-	public void addFriend(MovieCharacter friend) {
-		linkOut(friend, HAS_FRIEND);
+	public void addFriends(MovieCharacter... friends) {
+		for (MovieCharacter friend : friends) {
+			linkOut(friend, HAS_FRIEND);
+		}
 	}
 
 	public List<? extends MovieCharacter> getFriends() {
 		return out(HAS_FRIEND).toList(MovieCharacter.class);
 	}
 
-	public void addAppearance(Movie movie) {
-		linkOut(movie, APPEARS_IN);
+	public void addAppearances(Movie... movies) {
+		for (Movie movie : movies) {
+			linkOut(movie, APPEARS_IN);
+		}
+	}
+
+	public List<? extends Movie> getAppearances() {
+		return out(APPEARS_IN).toList(Movie.class);
 	}
 }

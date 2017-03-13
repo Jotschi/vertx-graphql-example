@@ -12,6 +12,7 @@ public class StarWarsRoot extends RootVertex {
 	public static final String HAS_HUMANS_ROOT = "HAS_HUMANS_ROOT";
 	public static final String HAS_DROIDS_ROOT = "HAS_DROIDS_ROOT";
 	public static final String HAS_PLANETS_ROOT = "HAS_PLANET_ROOT";
+	public static final String HAS_MOVIES_ROOT = "HAS_MOVIES_ROOT";
 
 	public static final String HAS_HERO = "HAS_HERO";
 
@@ -25,6 +26,14 @@ public class StarWarsRoot extends RootVertex {
 
 	public void setPlanetsRoot(PlanetsRoot planets) {
 		setLinkOutTo(planets, HAS_PLANETS_ROOT);
+	}
+
+	public MovieRoot getMovieRoot() {
+		return out(HAS_MOVIES_ROOT).nextOrDefaultExplicit(MovieRoot.class, null);
+	}
+
+	public void setMovieRoot(MovieRoot movies) {
+		setLinkOutTo(movies, HAS_MOVIES_ROOT);
 	}
 
 	public void setHero(Droid droid) {

@@ -1,8 +1,9 @@
 { 
+	movies { title },
 	hero {
 		id,
 		name,
-		appearsIn { name },
+		appearsIn { title },
 		friends  { name },
 		... on Droid { primaryFunction }
 	} 

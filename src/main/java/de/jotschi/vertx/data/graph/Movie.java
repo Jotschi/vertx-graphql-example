@@ -6,4 +6,13 @@ import com.gentics.ferma.orientdb.AbstractInterceptingVertexFrame;
 @GraphElement
 public class Movie extends AbstractInterceptingVertexFrame implements Named {
 
+	public final static String DESCRIPTION = "description";
+
+	public void setDescription(String text) {
+		setProperty(DESCRIPTION, text);
+	}
+
+	public String getDescription() {
+		return getProperty(DESCRIPTION);
+	}
 }
