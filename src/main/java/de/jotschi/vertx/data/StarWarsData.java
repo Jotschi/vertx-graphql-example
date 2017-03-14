@@ -1,7 +1,7 @@
 package de.jotschi.vertx.data;
 
 import com.gentics.ferma.Trx;
-import com.gentics.ferma.orientdb.OrientDBTrxFactory;
+import com.gentics.ferma.orientdb.vertx.OrientDBTrxFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 
 import de.jotschi.vertx.data.graph.Droid;

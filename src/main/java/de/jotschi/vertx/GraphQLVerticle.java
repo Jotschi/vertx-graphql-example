@@ -32,7 +32,7 @@ public class GraphQLVerticle extends AbstractVerticle {
 	@Override
 	public void start() throws Exception {
 		Router router = Router.router(vertx);
-		router.route("/query")
+		router.route("/")
 				.handler(rc -> {
 					rc.request()
 							.bodyHandler(rh -> {
@@ -76,17 +76,19 @@ public class GraphQLVerticle extends AbstractVerticle {
 
 	 
 	
-	private void handleQuery(RoutingContext rc, String query) {
-		log.info("Handling query {" + query + "}");
+	private void handleQuery(RoutingContext rc, String json) {
+		log.info("Handling query {" + json + "}");
 
 		ExecutionResult result = null;
 		try (NoTrx noTrx = demoData.getGraph()
 				.noTrx()) {
+			JsonObject queryJson = new JsonObject(json);
+			String query = queryJson.getString("query");
 			result = new GraphQL(new StarWarsSchema().getStarWarsSchema()).execute(query, demoData.getRoot());
 		}
 		List<GraphQLError> errors = result.getErrors();
 		if (!errors.isEmpty()) {
-			log.error("Could not execute query {" + query + "}");
+			log.error("Could not execute query {" + json + "}");
 			for (GraphQLError error : errors) {
 				if (error.getLocations() == null || error.getLocations()
 						.isEmpty()) {

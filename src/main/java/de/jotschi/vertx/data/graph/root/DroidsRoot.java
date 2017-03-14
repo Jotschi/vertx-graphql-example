@@ -2,7 +2,14 @@ package de.jotschi.vertx.data.graph.root;
 
 import com.gentics.ferma.annotation.GraphElement;
 
+import de.jotschi.vertx.data.graph.Droid;
+
 @GraphElement
-public class DroidsRoot extends RootVertex {
+public class DroidsRoot extends RootVertex<Droid> {
+
+	@Override
+	Class<Droid> getItemType() {
+		return Droid.class;
+	}
 
 }

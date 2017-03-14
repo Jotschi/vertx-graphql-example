@@ -1,11 +1,12 @@
 package de.jotschi.vertx.data.graph.root;
 
 import com.gentics.ferma.annotation.GraphElement;
+import com.gentics.ferma.orientdb.AbstractInterceptingVertexFrame;
 
 import de.jotschi.vertx.data.graph.Droid;
 
 @GraphElement
-public class StarWarsRoot extends RootVertex {
+public class StarWarsRoot extends AbstractInterceptingVertexFrame {
 
 	public static final String HAS_CHARACTER = "HAS_CHARACTER";
 

@@ -10,7 +10,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.json.JsonObject;
@@ -21,8 +20,7 @@ public class GraphQLTest {
 
 	@BeforeClass
 	public static void setup() {
-		VertxOptions options = new VertxOptions();
-		vertx = Vertx.vertx(options);
+		vertx = Vertx.vertx();
 		vertx.deployVerticle(new GraphQLVerticle());
 	}
 
@@ -30,7 +28,7 @@ public class GraphQLTest {
 	public void testQuery() throws InterruptedException, IOException {
 
 		HttpClient client = vertx.createHttpClient();
-		HttpClientRequest request = client.post(3000, "localhost", "/query");
+		HttpClientRequest request = client.post(3000, "localhost", "/");
 		CountDownLatch latch = new CountDownLatch(1);
 		request.handler(rh -> {
 			rh.bodyHandler(bh -> {
@@ -40,7 +38,7 @@ public class GraphQLTest {
 			});
 		});
 		String query = readQuery("full-query");
-		request.end(query);
+		request.end(new JsonObject().put("query", query).toString());
 		latch.await(5999, TimeUnit.SECONDS);
 	}
 

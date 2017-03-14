@@ -9,7 +9,6 @@
 		<vertx.version>3.4.0</vertx.version>
 		<orientdb.version>2.2.17</orientdb.version>
 		<ferma.extensions.version>0.0.5-SNAPSHOT</ferma.extensions.version>
-		<ferma.version>2.2.1</ferma.version>
 	</properties>
 
 	<dependencies>
@@ -43,7 +42,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.gentics.ferma</groupId>
-			<artifactId>ferma-extensions-orientdb</artifactId>
+			<artifactId>ferma-extensions-orientdb-vertx</artifactId>
 			<version>${ferma.extensions.version}</version>
 		</dependency>
 
