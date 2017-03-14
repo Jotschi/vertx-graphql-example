@@ -74,8 +74,6 @@ public class GraphQLVerticle extends AbstractVerticle {
 
 	}
 
-	 
-	
 	private void handleQuery(RoutingContext rc, String json) {
 		log.info("Handling query {" + json + "}");
 
@@ -103,7 +101,7 @@ public class GraphQLVerticle extends AbstractVerticle {
 					.setStatusCode(400)
 					.end("Query could not be executed");
 		} else {
-			Map<String, Object> data = (Map<String, Object>) result.getData();
+			Map<String, Object> data = (Map) result.getData();
 			JsonObject response = new JsonObject();
 			try {
 				response.put("data", new JsonObject(new ObjectMapper().writeValueAsString(data)));

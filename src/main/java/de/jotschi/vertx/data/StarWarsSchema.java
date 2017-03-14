@@ -2,6 +2,7 @@ package de.jotschi.vertx.data;
 
 import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLArgument.newArgument;
+import static graphql.schema.GraphQLEnumType.newEnum;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLInterfaceType.newInterface;
 import static graphql.schema.GraphQLObjectType.newObject;
@@ -10,6 +11,7 @@ import de.jotschi.vertx.data.graph.Movie;
 import de.jotschi.vertx.data.graph.MovieCharacter;
 import de.jotschi.vertx.data.graph.root.StarWarsRoot;
 import graphql.schema.DataFetcher;
+import graphql.schema.GraphQLEnumType;
 import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
@@ -26,8 +28,10 @@ public class StarWarsSchema {
 	private GraphQLObjectType humanType;
 	private GraphQLObjectType movieType;
 	private GraphQLSchema starwarsSchema;
+	private GraphQLEnumType factionType;
 
 	public StarWarsSchema() {
+		this.factionType = createFactionType();
 		this.movieType = createMovieType();
 		this.characterInterface = createCharacterInterface();
 		this.humanType = createHumanType();
@@ -36,13 +40,25 @@ public class StarWarsSchema {
 		this.starwarsSchema = createStarWarsSchema();
 	}
 
+	private GraphQLEnumType createFactionType() {
+		return newEnum().name("Faction")
+				.description("Type of faction")
+				.value("REBELS", "Rebel Alliance",
+						"A resistance movement formed by Bail Organa and Mon Mothma to oppose the reign of the Galactic Empire.")
+				.value("REPUBLIC", "Galactic Republic",
+						"The democratic union that governed the galaxy for a thousand years prior to the rise of the Galactic Empire.")
+				.value("EMPIRE", "Galactic Empire",
+						"The galactic, constitutional monarchy and fascist government that replaced the Galactic Republic in the aftermath of the Clone Wars")
+				.build();
+	}
+
 	private GraphQLSchema createStarWarsSchema() {
 		return GraphQLSchema.newSchema()
 				.query(queryType)
 				.build();
 	}
 
-	public TypeResolver characterTypeResolver = (obj) -> {
+	private TypeResolver characterTypeResolver = (obj) -> {
 		System.out.println("type:" + obj.getClass()
 				.getName());
 		//			int id = object.id;
@@ -77,7 +93,7 @@ public class StarWarsSchema {
 		return null;
 	};
 
-	public DataFetcher r2d2Fetcher = (env) -> {
+	private DataFetcher r2d2Fetcher = (env) -> {
 		Object source = env.getSource();
 		if (source instanceof StarWarsRoot) {
 			StarWarsRoot root = (StarWarsRoot) source;
