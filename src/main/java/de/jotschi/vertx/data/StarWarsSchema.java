@@ -7,6 +7,7 @@ import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLInterfaceType.newInterface;
 import static graphql.schema.GraphQLObjectType.newObject;
 
+import de.jotschi.vertx.data.graph.ElementId;
 import de.jotschi.vertx.data.graph.Movie;
 import de.jotschi.vertx.data.graph.MovieCharacter;
 import de.jotschi.vertx.data.graph.root.StarWarsRoot;
@@ -86,19 +87,19 @@ public class StarWarsSchema {
 		return null;
 	};
 
+	private DataFetcher idDataFetcher = (env) -> {
+		Object source = env.getSource();
+		if (source instanceof ElementId) {
+			ElementId element = (ElementId) source;
+			return element.getElementId();
+		}
+		return null;
+	};
+
 	private DataFetcher droidDataFetcher = (env) -> {
 		System.out.println("DroidFetcher: " + env.getSource()
 				.getClass()
 				.getName());
-		return null;
-	};
-
-	private DataFetcher r2d2Fetcher = (env) -> {
-		Object source = env.getSource();
-		if (source instanceof StarWarsRoot) {
-			StarWarsRoot root = (StarWarsRoot) source;
-			return root.getHero();
-		}
 		return null;
 	};
 
@@ -196,7 +197,8 @@ public class StarWarsSchema {
 				// .id
 				.field(newFieldDefinition().name("id")
 						.description("The id of the droid.")
-						.type(new GraphQLNonNull(GraphQLString)))
+						.type(new GraphQLNonNull(GraphQLString))
+						.dataFetcher(idDataFetcher))
 
 				// .name
 				.field(newFieldDefinition().name("name")
@@ -232,7 +234,14 @@ public class StarWarsSchema {
 								.description(
 										"If omitted, returns the hero of the whole saga. If provided, returns the hero of that particular episode.")
 								.type(GraphQLString))
-						.dataFetcher(r2d2Fetcher))
+						.dataFetcher((env) -> {
+							Object source = env.getSource();
+							if (source instanceof StarWarsRoot) {
+								StarWarsRoot root = (StarWarsRoot) source;
+								return root.getHero();
+							}
+							return null;
+						}))
 
 				// .movies
 				.field(newFieldDefinition().name("movies")

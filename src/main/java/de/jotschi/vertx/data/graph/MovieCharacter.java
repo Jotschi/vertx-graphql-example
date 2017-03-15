@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.gentics.ferma.orientdb.AbstractInterceptingVertexFrame;
 
-public class MovieCharacter extends AbstractInterceptingVertexFrame implements Named {
+public class MovieCharacter extends AbstractInterceptingVertexFrame implements Named, ElementId {
 
 	public static final String HAS_PLANET = "HAS_PLANET";
 
