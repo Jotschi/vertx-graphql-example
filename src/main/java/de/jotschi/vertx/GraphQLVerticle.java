@@ -23,6 +23,9 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.StaticHandler;
 
+import static graphql.GraphQL.newGraphQL;
+import static graphql.schema.GraphQLSchema.*;
+
 public class GraphQLVerticle extends AbstractVerticle {
 
 	private static final Logger log = LoggerFactory.getLogger(GraphQLVerticle.class);
@@ -82,7 +85,8 @@ public class GraphQLVerticle extends AbstractVerticle {
 				.noTrx()) {
 			JsonObject queryJson = new JsonObject(json);
 			String query = queryJson.getString("query");
-			result = new GraphQL(new StarWarsSchema().getStarWarsSchema()).execute(query, demoData.getRoot());
+			GraphQL graphQL = newGraphQL(new StarWarsSchema().getStarWarsSchema()).build();
+			result = graphQL.execute(query, demoData.getRoot());
 		}
 		List<GraphQLError> errors = result.getErrors();
 		if (!errors.isEmpty()) {

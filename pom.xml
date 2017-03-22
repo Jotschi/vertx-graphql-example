@@ -9,6 +9,7 @@
 		<vertx.version>3.4.0</vertx.version>
 		<orientdb.version>2.2.17</orientdb.version>
 		<ferma.extensions.version>0.0.5-SNAPSHOT</ferma.extensions.version>
+		<graphql-java.version>2017-03-09T06-29-15</graphql-java.version>
 	</properties>
 
 	<dependencies>
@@ -20,7 +21,7 @@
 		<dependency>
 			<groupId>com.graphql-java</groupId>
 			<artifactId>graphql-java</artifactId>
-			<version>2.3.0</version>
+			<version>${graphql-java.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -101,6 +102,16 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
+		</repository>
+		<repository>
+			<id>graphql-snapshot</id>
+			<url>https://dl.bintray.com/andimarek/graphql-java/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
 		</repository>
 	</repositories>
 

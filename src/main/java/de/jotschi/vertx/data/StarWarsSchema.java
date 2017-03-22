@@ -7,6 +7,8 @@ import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLInterfaceType.newInterface;
 import static graphql.schema.GraphQLObjectType.newObject;
 
+import java.util.List;
+
 import de.jotschi.vertx.data.graph.ElementId;
 import de.jotschi.vertx.data.graph.Movie;
 import de.jotschi.vertx.data.graph.MovieCharacter;
@@ -69,31 +71,19 @@ public class StarWarsSchema {
 		return droidType;
 	};
 
-	private DataFetcher friendsDataFetcher = (env) -> {
-		Object source = env.getSource();
-		if (source instanceof MovieCharacter) {
-			MovieCharacter character = (MovieCharacter) source;
-			return character.getFriends();
-		}
-		return null;
+	private DataFetcher<List<? extends MovieCharacter>> friendsDataFetcher = (env) -> {
+		MovieCharacter character = env.getSource();
+		return character.getFriends();
 	};
 
-	private DataFetcher movieDataFetcher = (env) -> {
-		Object source = env.getSource();
-		if (source instanceof MovieCharacter) {
-			MovieCharacter character = (MovieCharacter) source;
-			return character.getAppearances();
-		}
-		return null;
+	private DataFetcher<List<? extends Movie>> movieDataFetcher = (env) -> {
+		MovieCharacter character = env.getSource();
+		return character.getAppearances();
 	};
 
-	private DataFetcher idDataFetcher = (env) -> {
-		Object source = env.getSource();
-		if (source instanceof ElementId) {
-			ElementId element = (ElementId) source;
-			return element.getElementId();
-		}
-		return null;
+	private DataFetcher<Integer> idDataFetcher = (env) -> {
+		ElementId element = env.getSource();
+		return element.getElementId();
 	};
 
 	private DataFetcher droidDataFetcher = (env) -> {
@@ -175,10 +165,8 @@ public class StarWarsSchema {
 						.description("Title of the episode.")
 						.type(GraphQLString)
 						.dataFetcher((env) -> {
-							if (env.getSource() instanceof Movie) {
-								return ((Movie) env.getSource()).getName();
-							}
-							return null;
+							Movie movie = env.getSource();
+							return movie.getName();
 						}))
 
 				// .description
@@ -235,25 +223,17 @@ public class StarWarsSchema {
 										"If omitted, returns the hero of the whole saga. If provided, returns the hero of that particular episode.")
 								.type(GraphQLString))
 						.dataFetcher((env) -> {
-							Object source = env.getSource();
-							if (source instanceof StarWarsRoot) {
-								StarWarsRoot root = (StarWarsRoot) source;
-								return root.getHero();
-							}
-							return null;
+							StarWarsRoot root = env.getSource();
+							return root.getHero();
 						}))
 
 				// .movies
 				.field(newFieldDefinition().name("movies")
 						.type(new GraphQLList(movieType))
 						.dataFetcher((env -> {
-							Object source = env.getSource();
-							if (source instanceof StarWarsRoot) {
-								StarWarsRoot root = (StarWarsRoot) source;
-								return root.getMovieRoot()
-										.getItems();
-							}
-							return null;
+							StarWarsRoot root = env.getSource();
+							return root.getMovieRoot()
+									.getItems();
 						})))
 
 				// .human
