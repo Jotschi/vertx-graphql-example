@@ -1,9 +1,12 @@
 package de.jotschi.vertx;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.BeforeClass;
@@ -18,28 +21,51 @@ public class GraphQLTest {
 
 	private static Vertx vertx = null;
 
+	private static HttpClient client;
+
 	@BeforeClass
 	public static void setup() {
 		vertx = Vertx.vertx();
 		vertx.deployVerticle(new GraphQLVerticle());
+		client = vertx.createHttpClient();
 	}
 
 	@Test
-	public void testQuery() throws InterruptedException, IOException {
+	public void testQuery() throws InterruptedException, IOException, ExecutionException {
+		String query = readQuery("full-query");
+		invokeQuery(query);
+	}
 
-		HttpClient client = vertx.createHttpClient();
+	@Test
+	public void testBogusQuery() throws InterruptedException, ExecutionException {
+		String query = "{bogus}";
+		JsonObject json = invokeQuery(query);
+		assertNotNull(json.getJsonArray("errors"));
+		JsonObject error = json.getJsonArray("errors")
+				.getJsonObject(0);
+		assertEquals(1, error.getJsonArray("locations")
+				.getJsonObject(0)
+				.getInteger("line")
+				.intValue());
+		assertEquals(1, error.getJsonArray("locations")
+				.getJsonObject(0)
+				.getInteger("column")
+				.intValue());
+		System.out.println(error.encodePrettily());
+	}
+
+	private JsonObject invokeQuery(String query) throws InterruptedException, ExecutionException {
 		HttpClientRequest request = client.post(3000, "localhost", "/");
-		CountDownLatch latch = new CountDownLatch(1);
+
+		CompletableFuture<JsonObject> fut = new CompletableFuture<>();
 		request.handler(rh -> {
 			rh.bodyHandler(bh -> {
-				JsonObject jsonObject = new JsonObject(bh.toString());
-				System.out.println(jsonObject.encodePrettily());
-				latch.countDown();
+				fut.complete(new JsonObject(bh.toString()));
 			});
 		});
-		String query = readQuery("full-query");
-		request.end(new JsonObject().put("query", query).toString());
-		latch.await(5999, TimeUnit.SECONDS);
+		request.end(new JsonObject().put("query", query)
+				.toString());
+		return fut.get();
 	}
 
 	private String readQuery(String queryName) throws IOException {
