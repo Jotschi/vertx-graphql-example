@@ -15,6 +15,9 @@ import de.jotschi.vertx.data.graph.root.PlanetsRoot;
 import de.jotschi.vertx.data.graph.root.StarWarsRoot;
 import io.vertx.core.Vertx;
 
+/**
+ * Class which provides the star wars graph. 
+ */
 public class StarWarsData {
 
 	private OrientGraphFactory graphFactory = new OrientGraphFactory("memory:tinkerpop").setupPool(4, 10);
@@ -88,7 +91,7 @@ public class StarWarsData {
 			tatooine.setElementId(400);
 			tatooine.setName("Tatooine");
 
-			//Alderaan
+			// Alderaan
 			Planet alderaan = tx.addVertex(Planet.class);
 			alderaan.setElementId(401);
 			alderaan.setName("Alderaan");
@@ -130,7 +133,7 @@ public class StarWarsData {
 			// C3P0
 			Droid c3p0 = tx.addVertex(Droid.class);
 			c3p0.setElementId(1005);
-			c3p0.setName("C-3P0");
+			c3p0.setName("C-3PO");
 			c3p0.setPrimaryFunction("Protocol");
 			c3p0.addAppearances(movie1, movie2, movie3, movie9);
 

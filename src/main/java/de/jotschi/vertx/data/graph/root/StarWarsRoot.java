@@ -21,8 +21,16 @@ public class StarWarsRoot extends AbstractInterceptingVertexFrame {
 		setLinkOutTo(humans, HAS_HUMANS_ROOT);
 	}
 
+	public HumansRoot getHumansRoot() {
+		return out(HAS_HUMANS_ROOT).nextOrDefaultExplicit(HumansRoot.class, null);
+	}
+
 	public void setDroidsRoot(DroidsRoot droids) {
 		setLinkOutTo(droids, HAS_DROIDS_ROOT);
+	}
+
+	public DroidsRoot getDroidsRoot() {
+		return out(HAS_DROIDS_ROOT).nextOrDefaultExplicit(DroidsRoot.class, null);
 	}
 
 	public void setPlanetsRoot(PlanetsRoot planets) {

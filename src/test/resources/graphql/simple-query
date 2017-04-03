@@ -1,0 +1,10 @@
+{
+	# [$.data.movies[0].title=A New Hope]
+	movies {
+		title
+	}
+	# [$.data.hero.name=R2-D2]
+	hero {
+		name
+	}
+}

@@ -1,74 +1,42 @@
 package de.jotschi.vertx;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static de.jotschi.vertx.util.Assertions.assertThat;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.CompletableFuture;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.json.JsonObject;
 
-public class GraphQLTest {
+@RunWith(Parameterized.class)
+public class GraphQLTest extends AbstractTest {
 
-	private static Vertx vertx = null;
+	private final String queryName;
 
-	private static HttpClient client;
+	public GraphQLTest(String queryName) {
+		this.queryName = queryName;
+	}
 
-	@BeforeClass
-	public static void setup() {
-		vertx = Vertx.vertx();
-		vertx.deployVerticle(new GraphQLVerticle());
-		client = vertx.createHttpClient();
+	@Parameters(name = "query={0}")
+	public static List<String> paramData() {
+		List<String> testQueries = new ArrayList<>();
+		testQueries.add("full-query");
+		testQueries.add("simple-query");
+		return testQueries;
 	}
 
 	@Test
 	public void testQuery() throws InterruptedException, IOException, ExecutionException {
-		String query = readQuery("full-query");
-		invokeQuery(query);
+		String query = readQuery(queryName);
+		JsonObject response = invokeQuery(query);
+		System.out.println(response.encodePrettily()); 
+		assertThat(response).compliesToAssertions(queryName);
 	}
 
-	@Test
-	public void testBogusQuery() throws InterruptedException, ExecutionException {
-		String query = "{bogus}";
-		JsonObject json = invokeQuery(query);
-		assertNotNull(json.getJsonArray("errors"));
-		JsonObject error = json.getJsonArray("errors")
-				.getJsonObject(0);
-		assertEquals(1, error.getJsonArray("locations")
-				.getJsonObject(0)
-				.getInteger("line")
-				.intValue());
-		assertEquals(1, error.getJsonArray("locations")
-				.getJsonObject(0)
-				.getInteger("column")
-				.intValue());
-		System.out.println(error.encodePrettily());
-	}
-
-	private JsonObject invokeQuery(String query) throws InterruptedException, ExecutionException {
-		HttpClientRequest request = client.post(3000, "localhost", "/");
-
-		CompletableFuture<JsonObject> fut = new CompletableFuture<>();
-		request.handler(rh -> {
-			rh.bodyHandler(bh -> {
-				fut.complete(new JsonObject(bh.toString()));
-			});
-		});
-		request.end(new JsonObject().put("query", query)
-				.toString());
-		return fut.get();
-	}
-
-	private String readQuery(String queryName) throws IOException {
-		return IOUtils.toString(getClass().getResourceAsStream("/" + queryName), StandardCharsets.UTF_8);
-	}
 }

@@ -8,17 +8,16 @@ import static io.vertx.core.http.HttpMethod.GET;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gentics.ferma.NoTrx;
-
 import de.jotschi.vertx.data.StarWarsData;
 import de.jotschi.vertx.data.StarWarsSchema;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.GraphQLError;
 import graphql.language.SourceLocation;
+import graphql.schema.GraphQLSchema;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.AsyncResult;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -34,17 +33,17 @@ public class GraphQLVerticle extends AbstractVerticle {
 
 	private StarWarsData demoData = new StarWarsData(vertx);
 
+	private GraphQLSchema schema = new StarWarsSchema().getStarWarsSchema();
+
 	@Override
 	public void start() throws Exception {
 		Router router = Router.router(vertx);
-		router.route("/")
-				.handler(rc -> {
-					rc.request()
-							.bodyHandler(rh -> {
-								String query = rh.toString();
-								handleQuery(rc, query);
-							});
-				});
+		router.route("/").handler(rc -> {
+				rc.request().bodyHandler(rh -> {
+					String query = rh.toString();
+					handleQuery(rc, query);
+			});
+		});
 
 		StaticHandler staticHandler = StaticHandler.create("graphiql");
 		staticHandler.setDirectoryListing(false);
@@ -60,37 +59,39 @@ public class GraphQLVerticle extends AbstractVerticle {
 				.handler(rc -> {
 					if ("/browser".equals(rc.request()
 							.path())) {
-						rc.response()
-								.setStatusCode(302);
-						rc.response()
-								.headers()
-								.set("Location", rc.request()
-										.path() + "/");
-						rc.response()
-								.end();
+						rc.response().setStatusCode(302);
+						rc.response().headers()
+							.set("Location", rc.request().path() + "/");
+						rc.response().end();
 					} else {
 						rc.next();
 					}
 				});
 
-		vertx.createHttpServer()
-				.requestHandler(router::accept)
-				.listen(3000);
+		vertx.createHttpServer().requestHandler(router::accept).listen(3000);
 
 	}
 
+	/**
+	 * Handle the graphql query.
+	 * 
+	 * @param rc
+	 * @param json
+	 */
 	private void handleQuery(RoutingContext rc, String json) {
 		log.info("Handling query {" + json + "}");
-
-		ExecutionResult result = null;
-		try (NoTrx noTrx = demoData.getGraph()
-				.noTrx()) {
-			JsonObject queryJson = new JsonObject(json);
-			String query = queryJson.getString("query");
-			GraphQL graphQL = newGraphQL(new StarWarsSchema().getStarWarsSchema()).build();
-			result = graphQL.execute(query, demoData.getRoot());
+		// The graphql query is transmitted within a JSON string
+		JsonObject queryJson = new JsonObject(json);
+		String query = queryJson.getString("query");
+		demoData.getGraph().asyncNoTrx((tx) -> {
+			// Invoke the query and handle the resulting JSON 
+			GraphQL graphQL = newGraphQL(schema).build();
+			tx.complete(graphQL.execute(query, demoData.getRoot()));
+		}, (AsyncResult<ExecutionResult>rh )-> {
+			ExecutionResult result = rh.result();
 			List<GraphQLError> errors = result.getErrors();
 			JsonObject response = new JsonObject();
+			// Check whether the query has returned any errors. We need to add those to the response as well.
 			if (!errors.isEmpty()) {
 				log.error("Could not execute query {" + query + "}");
 				JsonArray jsonErrors = new JsonArray();
@@ -117,15 +118,12 @@ public class GraphQLVerticle extends AbstractVerticle {
 				Map<String, Object> data = (Map<String, Object>) result.getData();
 				response.put("data", new JsonObject(Json.encode(data)));
 			}
-			HttpResponseStatus statusCode = result.getErrors() != null ? BAD_REQUEST : OK;
+			HttpResponseStatus statusCode = (result.getErrors() != null && !result.getErrors()
+					.isEmpty()) ? BAD_REQUEST : OK;
 
-			rc.response()
-					.putHeader("Content-Type", "application/json");
-			rc.response()
-					.setStatusCode(statusCode.code());
-			rc.response()
-					.end(response.toString());
-		}
-
+			rc.response().putHeader("Content-Type", "application/json");
+			rc.response().setStatusCode(statusCode.code());
+			rc.response().end(response.toString());
+		});
 	}
 }

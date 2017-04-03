@@ -1,0 +1,27 @@
+{ 
+	movies { title },
+	hero {
+		id,
+		name,
+		appearsIn { title },
+		friends  { name },
+		... on Droid { primaryFunction }
+	}
+	human(id: 1000) {
+		# [$.data.human.name=Luke Skywalker]
+		name
+	}
+	vader: human(id: 1001) {
+		# [$.data.vader.name=Darth Vader]
+		name
+		friends {
+			# [$.data.vader.friends.length()=1]
+			# [$.data.vader.friends[0].name=Wilhuff Tarkin]
+			name
+		}
+	}
+	droid(id: 1005) {
+		# [$.data.droid.name=C-3PO]
+		name
+	}
+}
