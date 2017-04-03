@@ -2,7 +2,6 @@
 
 This example shows how to build a basic GraphQL endpoint using [Vert.x](http://vertx.io/) and [OrientDB](http://orientdb.com/orientdb/)
 
-
 ## Getting Started
 
 * Clone example project
@@ -17,9 +16,17 @@ cd vertx-graphql-example
 Access http://localhost:3000/browser/ in your browser or use this 
 [Example Query](http://localhost:3000/browser/?query=%7B%0A%20%20movies%20%7B%0A%20%20%20%20title%0A%20%20%7D%0A%20%20hero%20%7B%0A%20%20%20%20name%0A%20%20%20%20friends%20%7B%0A%20%20%20%20%20%20name%0A%20%20%20%20%20%20friends%20%7B%0A%20%20%20%20%20%20%20%20name%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A)
 
-## Contents
+## Motivation
 
-The example shows:
+I recently added GraphQL support to [Gentics Mesh](http://getmesh.io) and I thought it would be a good idea to boil down the essence of my implementation in example so that I could share it in a simpler form.
+This example will not cover all aspects that I have added to the Gentics Mesh API (e.g. paging, search and error handling) but it will give you a basic overview of the parts that I put together.
+GraphQL does not require a GraphDB even if the name might suggest it. Using a graphdb in combination with GraphQL does nevertheless provide you with some advantages which I will highlight later on.
+
+## Why StarWars?
+
+Most graphql examples which I found make use of that domain model. I adoped the graphql-java demo schema and added some values.
+
+## Contents
 
 ### GraphiQL browser
 
@@ -33,13 +40,15 @@ Additional edges exist between those elements.
 This example does not use SQL to interface with the GraphDB. Instead it uses makes use of the Object Graph Mapper library [Ferma 2.x](https://github.com/Syncleus/Ferma). This library allowed me to create basic Java Classes which map to the vertices which I later used within my Graph. Ferma helps a lot if you plan to setup your graph domain model. 
 Using a tinkerpop based native API is in most cases the fastest way to interact with the GraphDB. OrientDB nativly supports this API and thus the overall overhead is minimal compared to SQL.
 
-
 NOTE: Ferma 2.x uses Tinkerpop 2.x - Ferma 3.x makes use of Tinkerpop 3.x and works differently. I choose Ferma 2.x for this example because the Tinkerpop 3.x support for OrientDB is still in development. (as of 04/2017)
 
 ### GraphQL schema
 
 The GraphQL schema defines which fields and objects can be resolved via a query.
 I use [graphql-java](https://github.com/graphql-java/graphql-java) to setup the schema and process the query.
+
+The `StarWarsSchema` class contains all schema fields and object definitions.
+Any field may define a data fetcher which is used to access the graph database and load the needed data. Data fetchers can access the the graphql query context (in our case the StarWarsRoot vertex) and a source element. The context will not change if you access nested elements but the source element can change. This is very useful since you can just pass along a vertex. This vertex can be processed by another data fetcher and related vertices, edges or a single vertex can be returned. You can create a very fast and efficient API if you model your graph relationships in a way that it matches up closely to your graphql schema.
 
 ### Executing queries
 
@@ -74,3 +83,9 @@ The `GraphQLTest` which is part of the example loads a predefined GraphQL query 
 ```
 
 The comment contains a basic json-path and expected value for that path.
+
+### Whats next? What did you not cover?
+
+I have not covered mutation support. (GraphQL write operations). 
+I did not cover async graphql execution. It may be desireable to execute parts of the graphql query in-parallel to speedup processing.
+ 
