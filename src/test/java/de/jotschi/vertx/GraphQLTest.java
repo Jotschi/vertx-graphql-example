@@ -2,10 +2,8 @@ package de.jotschi.vertx;
 
 import static de.jotschi.vertx.util.Assertions.assertThat;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +30,7 @@ public class GraphQLTest extends AbstractTest {
 	}
 
 	@Test
-	public void testQuery() throws InterruptedException, IOException, ExecutionException {
+	public void testQuery() throws Exception {
 		String query = readQuery(queryName);
 		JsonObject response = invokeQuery(query);
 		System.out.println(response.encodePrettily()); 

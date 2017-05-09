@@ -5,6 +5,7 @@ import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.vertx.core.http.HttpMethod.GET;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class GraphQLVerticle extends AbstractVerticle {
 
 	private static final Logger log = LoggerFactory.getLogger(GraphQLVerticle.class);
 
-	private StarWarsData demoData = new StarWarsData(vertx);
+	private StarWarsData demoData;
 
 	private GraphQLSchema schema = new StarWarsSchema().getStarWarsSchema();
 
@@ -39,9 +40,9 @@ public class GraphQLVerticle extends AbstractVerticle {
 	public void start() throws Exception {
 		Router router = Router.router(vertx);
 		router.route("/").handler(rc -> {
-				rc.request().bodyHandler(rh -> {
-					String query = rh.toString();
-					handleQuery(rc, query);
+			rc.request().bodyHandler(rh -> {
+				String query = rh.toString();
+				handleQuery(rc, query);
 			});
 		});
 
@@ -49,26 +50,21 @@ public class GraphQLVerticle extends AbstractVerticle {
 		staticHandler.setDirectoryListing(false);
 		staticHandler.setCachingEnabled(false);
 		staticHandler.setIndexPage("index.html");
-		router.route("/browser/*")
-				.method(GET)
-				.handler(staticHandler);
+		router.route("/browser/*").method(GET).handler(staticHandler);
 
 		// Redirect handler
-		router.route("/browser")
-				.method(GET)
-				.handler(rc -> {
-					if ("/browser".equals(rc.request()
-							.path())) {
-						rc.response().setStatusCode(302);
-						rc.response().headers()
-							.set("Location", rc.request().path() + "/");
-						rc.response().end();
-					} else {
-						rc.next();
-					}
-				});
+		router.route("/browser").method(GET).handler(rc -> {
+			if ("/browser".equals(rc.request().path())) {
+				rc.response().setStatusCode(302);
+				rc.response().headers().set("Location", rc.request().path() + "/");
+				rc.response().end();
+			} else {
+				rc.next();
+			}
+		});
 
 		vertx.createHttpServer().requestHandler(router::accept).listen(3000);
+		demoData = new StarWarsData(vertx);
 
 	}
 
@@ -84,10 +80,15 @@ public class GraphQLVerticle extends AbstractVerticle {
 		JsonObject queryJson = new JsonObject(json);
 		String query = queryJson.getString("query");
 		demoData.getGraph().asyncNoTrx((tx) -> {
-			// Invoke the query and handle the resulting JSON 
+			// Invoke the query and handle the resulting JSON
 			GraphQL graphQL = newGraphQL(schema).build();
-			tx.complete(graphQL.execute(query, demoData.getRoot()));
-		}, (AsyncResult<ExecutionResult>rh )-> {
+			tx.complete(graphQL.execute(query, demoData.getRoot(), extractVariables(queryJson)));
+		}, (AsyncResult<ExecutionResult> rh) -> {
+			if (rh.failed()) {
+				rc.fail(rh.cause());
+				return;
+			}
+
 			ExecutionResult result = rh.result();
 			List<GraphQLError> errors = result.getErrors();
 			JsonObject response = new JsonObject();
@@ -100,8 +101,7 @@ public class GraphQLVerticle extends AbstractVerticle {
 					JsonObject jsonError = new JsonObject();
 					jsonError.put("message", error.getMessage());
 					jsonError.put("type", error.getErrorType());
-					if (error.getLocations() != null || !error.getLocations()
-							.isEmpty()) {
+					if (error.getLocations() != null || !error.getLocations().isEmpty()) {
 						JsonArray errorLocations = new JsonArray();
 						jsonError.put("locations", errorLocations);
 						for (SourceLocation location : error.getLocations()) {
@@ -118,12 +118,27 @@ public class GraphQLVerticle extends AbstractVerticle {
 				Map<String, Object> data = (Map<String, Object>) result.getData();
 				response.put("data", new JsonObject(Json.encode(data)));
 			}
-			HttpResponseStatus statusCode = (result.getErrors() != null && !result.getErrors()
-					.isEmpty()) ? BAD_REQUEST : OK;
+			HttpResponseStatus statusCode = (result.getErrors() != null && !result.getErrors().isEmpty()) ? BAD_REQUEST : OK;
 
 			rc.response().putHeader("Content-Type", "application/json");
 			rc.response().setStatusCode(statusCode.code());
 			rc.response().end(response.toString());
 		});
+	}
+
+	/**
+	 * Extracts the variables of a query as a map. Returns empty map if no variables are found.
+	 *
+	 * @param request
+	 *            The request body
+	 * @return GraphQL variables
+	 */
+	private Map<String, Object> extractVariables(JsonObject request) {
+		JsonObject variables = request.getJsonObject("variables");
+		if (variables == null) {
+			return Collections.emptyMap();
+		} else {
+			return variables.getMap();
+		}
 	}
 }

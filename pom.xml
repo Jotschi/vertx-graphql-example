@@ -7,7 +7,7 @@
 
 	<properties>
 		<vertx.version>3.4.0</vertx.version>
-		<orientdb.version>2.2.17</orientdb.version>
+		<orientdb.version>2.2.19</orientdb.version>
 		<ferma.extensions.version>0.0.5-SNAPSHOT</ferma.extensions.version>
 		<graphql-java.version>2017-03-09T06-29-15</graphql-java.version>
 	</properties>

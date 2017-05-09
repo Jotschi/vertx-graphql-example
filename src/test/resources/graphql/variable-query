@@ -1,0 +1,11 @@
+query Query($id: Int!) {
+	vader: human(id: $id) {
+		# [$.data.vader.name=Darth Vader]
+		name
+		friends {
+			# [$.data.vader.friends.length()=1]
+			# [$.data.vader.friends[0].name=Wilhuff Tarkin]
+			name
+		}
+	}
+}
