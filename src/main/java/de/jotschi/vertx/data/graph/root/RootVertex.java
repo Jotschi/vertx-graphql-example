@@ -2,8 +2,8 @@ package de.jotschi.vertx.data.graph.root;
 
 import java.util.List;
 
-import com.gentics.ferma.orientdb.AbstractInterceptingVertexFrame;
 import com.syncleus.ferma.VertexFrame;
+import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 
 /**
  * Abstract class for root vertices which are used to group/aggregate various other vertices.

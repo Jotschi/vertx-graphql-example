@@ -1,7 +1,7 @@
 package de.jotschi.vertx.data;
 
-import com.gentics.ferma.Trx;
-import com.gentics.ferma.orientdb.vertx.OrientDBTrxFactory;
+import com.gentics.ferma.ext.orientdb.vertx.OrientDBTxVertexFactory;
+import com.syncleus.ferma.tx.Tx;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 
 import de.jotschi.vertx.data.graph.Droid;
@@ -21,17 +21,17 @@ import io.vertx.core.Vertx;
 public class StarWarsData {
 
 	private OrientGraphFactory graphFactory = new OrientGraphFactory("memory:tinkerpop").setupPool(4, 10);
-	private OrientDBTrxFactory graph;
+	private OrientDBTxVertexFactory graph;
 
 	private StarWarsRoot root;
 
 	public StarWarsData(Vertx vertx) {
-		graph = new OrientDBTrxFactory(graphFactory, vertx, "de.jotschi.vertx.data.graph");
+		graph = new OrientDBTxVertexFactory(graphFactory, vertx, "de.jotschi.vertx.data.graph");
 		root = createDemoDataGraph();
 	}
 
 	private StarWarsRoot createDemoDataGraph() {
-		try (Trx tx = graph.trx()) {
+		try (Tx tx = graph.tx()) {
 
 			Movie movie1 = tx.addVertex(Movie.class);
 			movie1.setName("A New Hope");
@@ -179,7 +179,7 @@ public class StarWarsData {
 		return root;
 	}
 
-	public OrientDBTrxFactory getGraph() {
+	public OrientDBTxVertexFactory getGraph() {
 		return graph;
 	}
 }

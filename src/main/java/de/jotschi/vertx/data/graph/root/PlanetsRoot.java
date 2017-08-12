@@ -1,6 +1,6 @@
 package de.jotschi.vertx.data.graph.root;
 
-import com.gentics.ferma.annotation.GraphElement;
+import com.syncleus.ferma.annotations.GraphElement;
 
 import de.jotschi.vertx.data.graph.Planet;
 

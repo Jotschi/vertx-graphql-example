@@ -2,7 +2,7 @@ package de.jotschi.vertx.data.graph;
 
 import java.util.List;
 
-import com.gentics.ferma.orientdb.AbstractInterceptingVertexFrame;
+import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 
 public class MovieCharacter extends AbstractInterceptingVertexFrame implements Named, ElementId {
 

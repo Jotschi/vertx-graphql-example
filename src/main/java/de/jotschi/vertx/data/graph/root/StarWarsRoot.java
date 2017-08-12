@@ -1,7 +1,7 @@
 package de.jotschi.vertx.data.graph.root;
 
-import com.gentics.ferma.annotation.GraphElement;
-import com.gentics.ferma.orientdb.AbstractInterceptingVertexFrame;
+import com.syncleus.ferma.annotations.GraphElement;
+import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 
 import de.jotschi.vertx.data.graph.Droid;
 

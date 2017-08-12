@@ -7,8 +7,8 @@
 
 	<properties>
 		<vertx.version>3.4.0</vertx.version>
-		<orientdb.version>2.2.19</orientdb.version>
-		<ferma.extensions.version>0.0.5-SNAPSHOT</ferma.extensions.version>
+		<orientdb.version>2.2.25</orientdb.version>
+		<ferma.extensions.version>2.3.0-SNAPSHOT</ferma.extensions.version>
 		<graphql-java.version>2017-03-09T06-29-15</graphql-java.version>
 	</properties>
 
@@ -37,7 +37,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.gentics.ferma</groupId>
-			<artifactId>ferma-extensions-orientdb-vertx</artifactId>
+			<artifactId>ferma-orientdb-vertx</artifactId>
 			<version>${ferma.extensions.version}</version>
 		</dependency>
 

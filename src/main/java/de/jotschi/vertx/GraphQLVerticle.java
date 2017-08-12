@@ -79,7 +79,7 @@ public class GraphQLVerticle extends AbstractVerticle {
 		// The graphql query is transmitted within a JSON string
 		JsonObject queryJson = new JsonObject(json);
 		String query = queryJson.getString("query");
-		demoData.getGraph().asyncNoTrx((tx) -> {
+		demoData.getGraph().asyncTx((tx) -> {
 			// Invoke the query and handle the resulting JSON
 			GraphQL graphQL = newGraphQL(schema).build();
 			tx.complete(graphQL.execute(query, demoData.getRoot(), extractVariables(queryJson)));

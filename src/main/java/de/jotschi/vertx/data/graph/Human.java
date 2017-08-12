@@ -1,6 +1,6 @@
 package de.jotschi.vertx.data.graph;
 
-import com.gentics.ferma.annotation.GraphElement;
+import com.syncleus.ferma.annotations.GraphElement;
 
 @GraphElement
 public class Human extends MovieCharacter {
