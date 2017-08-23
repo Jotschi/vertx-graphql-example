@@ -6,10 +6,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
-		<vertx.version>3.4.0</vertx.version>
+		<vertx.version>3.4.2</vertx.version>
 		<orientdb.version>2.2.25</orientdb.version>
 		<ferma.extensions.version>2.3.0-SNAPSHOT</ferma.extensions.version>
-		<graphql-java.version>2017-03-09T06-29-15</graphql-java.version>
+		<graphql-java.version>3.0.0</graphql-java.version>
 	</properties>
 
 	<dependencies>
