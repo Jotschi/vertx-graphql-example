@@ -22,7 +22,7 @@ public class StarWarsRoot extends AbstractInterceptingVertexFrame {
 	}
 
 	public HumansRoot getHumansRoot() {
-		return out(HAS_HUMANS_ROOT).nextOrDefaultExplicit(HumansRoot.class, null);
+		return traverse((g) -> g.out(HAS_HUMANS_ROOT)).nextOrDefaultExplicit(HumansRoot.class, null);
 	}
 
 	public void setDroidsRoot(DroidsRoot droids) {
@@ -30,7 +30,7 @@ public class StarWarsRoot extends AbstractInterceptingVertexFrame {
 	}
 
 	public DroidsRoot getDroidsRoot() {
-		return out(HAS_DROIDS_ROOT).nextOrDefaultExplicit(DroidsRoot.class, null);
+		return traverse((g) -> g.out(HAS_DROIDS_ROOT)).nextOrDefaultExplicit(DroidsRoot.class, null);
 	}
 
 	public void setPlanetsRoot(PlanetsRoot planets) {
@@ -38,7 +38,7 @@ public class StarWarsRoot extends AbstractInterceptingVertexFrame {
 	}
 
 	public MovieRoot getMovieRoot() {
-		return out(HAS_MOVIES_ROOT).nextOrDefaultExplicit(MovieRoot.class, null);
+		return traverse((g) -> g.out(HAS_MOVIES_ROOT)).nextOrDefaultExplicit(MovieRoot.class, null);
 	}
 
 	public void setMovieRoot(MovieRoot movies) {
@@ -50,7 +50,7 @@ public class StarWarsRoot extends AbstractInterceptingVertexFrame {
 	}
 
 	public Droid getHero() {
-		return out(HAS_HERO).nextOrDefaultExplicit(Droid.class, null);
+		return traverse((g) -> g.out(HAS_HERO)).nextOrDefaultExplicit(Droid.class, null);
 	}
 
 }

@@ -24,7 +24,7 @@ public class MovieCharacter extends AbstractInterceptingVertexFrame implements N
 	}
 
 	public Planet getHome() {
-		return out(HAS_HOME).nextOrDefaultExplicit(Planet.class, null);
+		return traverse((g) -> g.out(HAS_HOME)).nextOrDefaultExplicit(Planet.class, null);
 	}
 
 	public void addFriends(MovieCharacter... friends) {
@@ -34,7 +34,7 @@ public class MovieCharacter extends AbstractInterceptingVertexFrame implements N
 	}
 
 	public List<? extends MovieCharacter> getFriends() {
-		return out(HAS_FRIEND).toList(MovieCharacter.class);
+		return traverse((g) -> g.out(HAS_FRIEND)).toList(MovieCharacter.class);
 	}
 
 	public void addAppearances(Movie... movies) {
@@ -44,6 +44,6 @@ public class MovieCharacter extends AbstractInterceptingVertexFrame implements N
 	}
 
 	public List<? extends Movie> getAppearances() {
-		return out(APPEARS_IN).toList(Movie.class);
+		return traverse((g) -> g.out(APPEARS_IN)).toList(Movie.class);
 	}
 }

@@ -6,9 +6,9 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
-		<vertx.version>3.4.2</vertx.version>
-		<orientdb.version>2.2.25</orientdb.version>
-		<ferma.extensions.version>2.3.0-SNAPSHOT</ferma.extensions.version>
+		<vertx.version>3.5.0.Beta1</vertx.version>
+		<orientdb.version>3.0.0m2</orientdb.version>
+		<ferma-orientdb-vertx.version>3.0.0-SNAPSHOT</ferma-orientdb-vertx.version>
 		<graphql-java.version>3.0.0</graphql-java.version>
 	</properties>
 
@@ -22,6 +22,11 @@
 			<groupId>com.graphql-java</groupId>
 			<artifactId>graphql-java</artifactId>
 			<version>${graphql-java.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.2</version>
 		</dependency>
 
 		<!-- OrientDB -->
@@ -38,7 +43,7 @@
 		<dependency>
 			<groupId>com.gentics.ferma</groupId>
 			<artifactId>ferma-orientdb-vertx</artifactId>
-			<version>${ferma.extensions.version}</version>
+			<version>${ferma-orientdb-vertx.version}</version>
 		</dependency>
 
 		<!-- Test dependencies -->

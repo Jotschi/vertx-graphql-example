@@ -1,8 +1,9 @@
 package de.jotschi.vertx.data;
 
+import org.apache.tinkerpop.gremlin.orientdb.OrientGraphFactory;
+
 import com.gentics.ferma.ext.orientdb.vertx.OrientDBTxVertexFactory;
 import com.syncleus.ferma.tx.Tx;
-import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 
 import de.jotschi.vertx.data.graph.Droid;
 import de.jotschi.vertx.data.graph.Human;

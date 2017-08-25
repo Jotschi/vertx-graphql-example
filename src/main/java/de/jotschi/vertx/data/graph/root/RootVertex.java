@@ -29,7 +29,7 @@ public abstract class RootVertex<T extends VertexFrame> extends AbstractIntercep
 	 * @return
 	 */
 	public List<? extends T> getItems() {
-		return out("HAS_ITEM").toList(getItemType());
+		return traverse((g) -> g.out("HAS_ITEM")).toList(getItemType());
 	}
 
 	/**
@@ -39,7 +39,7 @@ public abstract class RootVertex<T extends VertexFrame> extends AbstractIntercep
 	 * @return
 	 */
 	public T findById(int id) {
-		return out("HAS_ITEM").has("elementId", id)
+		return traverse((g) -> g.out("HAS_ITEM").has("elementId", id))
 				.nextOrDefaultExplicit(getItemType(), null);
 	}
 
