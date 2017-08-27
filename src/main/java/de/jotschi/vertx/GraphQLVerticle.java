@@ -11,6 +11,7 @@ import java.util.Map;
 
 import de.jotschi.vertx.data.StarWarsData;
 import de.jotschi.vertx.data.StarWarsSchema;
+import graphql.ExceptionWhileDataFetching;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.GraphQLError;
@@ -98,10 +99,13 @@ public class GraphQLVerticle extends AbstractVerticle {
 				JsonArray jsonErrors = new JsonArray();
 				response.put("errors", jsonErrors);
 				for (GraphQLError error : errors) {
+					if(error instanceof ExceptionWhileDataFetching) {
+						((ExceptionWhileDataFetching)error).getException().printStackTrace();
+					}
 					JsonObject jsonError = new JsonObject();
 					jsonError.put("message", error.getMessage());
 					jsonError.put("type", error.getErrorType());
-					if (error.getLocations() != null || !error.getLocations().isEmpty()) {
+					if (error.getLocations() != null && !error.getLocations().isEmpty()) {
 						JsonArray errorLocations = new JsonArray();
 						jsonError.put("locations", errorLocations);
 						for (SourceLocation location : error.getLocations()) {
