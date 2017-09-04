@@ -2,7 +2,6 @@ package de.jotschi.vertx.data;
 
 import org.apache.tinkerpop.gremlin.orientdb.OrientGraphFactory;
 
-import com.gentics.ferma.ext.orientdb.vertx.OrientDBTxVertexFactory;
 import com.syncleus.ferma.tx.Tx;
 
 import de.jotschi.vertx.data.graph.Droid;
@@ -14,6 +13,7 @@ import de.jotschi.vertx.data.graph.root.HumansRoot;
 import de.jotschi.vertx.data.graph.root.MovieRoot;
 import de.jotschi.vertx.data.graph.root.PlanetsRoot;
 import de.jotschi.vertx.data.graph.root.StarWarsRoot;
+import de.jotschi.vertx.ferma.ext.orientdb.OrientDBTxVertexFactory;
 import io.vertx.core.Vertx;
 
 /**
@@ -21,7 +21,7 @@ import io.vertx.core.Vertx;
  */
 public class StarWarsData {
 
-	private OrientGraphFactory graphFactory = new OrientGraphFactory("memory:tinkerpop").setupPool(4, 10);
+	private OrientGraphFactory graphFactory = new OrientGraphFactory("memory:tinkerpop").setupPool(10, 30);
 	private OrientDBTxVertexFactory graph;
 
 	private StarWarsRoot root;

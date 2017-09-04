@@ -14,7 +14,7 @@ import de.jotschi.vertx.data.graph.root.HumansRoot;
 import de.jotschi.vertx.data.graph.root.StarWarsRoot;
 
 public class StarWarsDataTest {
-
+ 
 	@Test
 	public void testData() {
 		StarWarsData data = new StarWarsData(null);
@@ -26,10 +26,10 @@ public class StarWarsDataTest {
 			Human human = humanRoot.findById(1001);
 			assertNotNull(human);
 			for (MovieCharacter friend : human.getFriends()) {
-				System.out.println(friend.getName());
+				assertNotNull(friend.getName());
 			}
 			for (Movie movie : data.getRoot().getMovieRoot().getItems()) {
-				System.out.println(movie.getName());
+				assertNotNull(movie.getName());
 			}
 		}
 	}

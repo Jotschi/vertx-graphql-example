@@ -1,5 +1,12 @@
 package de.jotschi.vertx.data.graph.root;
 
+import java.util.Iterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import org.apache.tinkerpop.gremlin.structure.Direction;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
+
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 
@@ -22,7 +29,17 @@ public class StarWarsRoot extends AbstractInterceptingVertexFrame {
 	}
 
 	public HumansRoot getHumansRoot() {
+		Iterator<Vertex> it = getElement().vertices(Direction.OUT, HAS_HUMANS_ROOT);
+		Stream<Vertex> s = iteratorToStream(it);
+		HumansRoot root = s.map(v -> getGraph().frameElementExplicit(v, HumansRoot.class)).findFirst().get();
+		root = getGraph().traverse(g ->  g.V()).nextExplicit(HumansRoot.class);
 		return traverse((g) -> g.out(HAS_HUMANS_ROOT)).nextOrDefaultExplicit(HumansRoot.class, null);
+//		return root;
+	}
+
+	public static <T> Stream<T> iteratorToStream(final Iterator<T> iterator) {
+		Iterable<T> iterable = () -> iterator;
+		return StreamSupport.stream(iterable.spliterator(), false);
 	}
 
 	public void setDroidsRoot(DroidsRoot droids) {

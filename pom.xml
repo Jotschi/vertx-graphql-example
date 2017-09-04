@@ -8,8 +8,8 @@
 	<properties>
 		<vertx.version>3.5.0.Beta1</vertx.version>
 		<orientdb.version>3.0.0m2</orientdb.version>
-		<ferma-orientdb-vertx.version>3.0.0-SNAPSHOT</ferma-orientdb-vertx.version>
-		<graphql-java.version>3.0.0</graphql-java.version>
+		<ferma.orientdb.version>3.0.0-SNAPSHOT</ferma.orientdb.version>
+		<graphql-java.version>4.0</graphql-java.version>
 	</properties>
 
 	<dependencies>
@@ -41,9 +41,9 @@
 			<version>${orientdb.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.gentics.ferma</groupId>
-			<artifactId>ferma-orientdb-vertx</artifactId>
-			<version>${ferma-orientdb-vertx.version}</version>
+			<groupId>com.syncleus.ferma</groupId>
+			<artifactId>ferma-orientdb</artifactId>
+			<version>${ferma.orientdb.version}</version>
 		</dependency>
 
 		<!-- Test dependencies -->

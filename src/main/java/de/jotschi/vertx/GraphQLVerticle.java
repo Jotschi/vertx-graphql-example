@@ -12,6 +12,7 @@ import java.util.Map;
 import de.jotschi.vertx.data.StarWarsData;
 import de.jotschi.vertx.data.StarWarsSchema;
 import graphql.ExceptionWhileDataFetching;
+import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.GraphQLError;
@@ -83,7 +84,8 @@ public class GraphQLVerticle extends AbstractVerticle {
 		demoData.getGraph().asyncTx((tx) -> {
 			// Invoke the query and handle the resulting JSON
 			GraphQL graphQL = newGraphQL(schema).build();
-			tx.complete(graphQL.execute(query, demoData.getRoot(), extractVariables(queryJson)));
+			ExecutionInput input = new ExecutionInput(query, null, queryJson, demoData.getRoot(), extractVariables(queryJson));
+			tx.complete(graphQL.execute(input));
 		}, (AsyncResult<ExecutionResult> rh) -> {
 			if (rh.failed()) {
 				rc.fail(rh.cause());
