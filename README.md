@@ -18,7 +18,7 @@ Access http://localhost:3000/browser/ in your browser or use this
 
 ## Motivation
 
-I recently added GraphQL support to [Gentics Mesh](http://getmesh.io) and I thought it would be a good idea to boil down the essence of my implementation in example so that I could share it in a simpler form.
+I recently added GraphQL support to [Gentics Mesh](https://getmesh.io) and I thought it would be a good idea to boil down the essence of my implementation in example so that I could share it in a simpler form.
 This example will not cover all aspects that I have added to the Gentics Mesh API (e.g. paging, search and error handling) but it will give you a basic overview of the parts that I put together.
 GraphQL does not require a GraphDB even if the name might suggest it. Using a graphdb in combination with GraphQL does nevertheless provide you with some advantages which I will highlight later on.
 
@@ -37,10 +37,9 @@ The [GraphiQL browser](https://github.com/graphql/graphiql) is served via a Stat
 The `StarWarsData` class contains the demo data. The demo data is structured in a very simple graph. A central root element is used to reference the aggregation vertices which list all the basic elements (humans, droids, planets, movies).
 Additional edges exist between those elements.
 
-This example does not use SQL to interface with the GraphDB. Instead it uses makes use of the Object Graph Mapper library [Ferma 2.x](https://github.com/Syncleus/Ferma). This library allowed me to create basic Java Classes which map to the vertices which I later used within my Graph. Ferma helps a lot if you plan to setup your graph domain model. 
+This example does not use SQL to interface with the GraphDB. Instead it uses makes use of the Object Graph Mapper library [Ferma 3.x](https://github.com/Syncleus/Ferma). This library allowed me to create basic Java classes which map to the vertices which I later use within my Graph. 
+Ferma helps a lot if you plan to setup your graph domain model. 
 Using a tinkerpop based native API is in most cases the fastest way to interact with the GraphDB. OrientDB nativly supports this API and thus the overall overhead is minimal compared to SQL.
-
-NOTE: Ferma 2.x uses Tinkerpop 2.x - Ferma 3.x makes use of Tinkerpop 3.x and works differently. I choose Ferma 2.x for this example because the Tinkerpop 3.x support for OrientDB is still in development. (as of 04/2017)
 
 ### GraphQL schema
 
@@ -86,6 +85,6 @@ The comment contains a basic json-path and expected value for that path.
 
 ### Whats next? What did you not cover?
 
-I have not covered mutation support. (GraphQL write operations). 
-I did not cover async graphql execution. It may be desireable to execute parts of the graphql query in-parallel to speedup processing.
+* I have not covered mutation support. (GraphQL write operations). 
+* I did not cover async graphql execution. It may be desireable to execute parts of the graphql query in-parallel to speedup processing.
  
