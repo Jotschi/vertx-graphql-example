@@ -58,8 +58,9 @@ The query is wrapped in an JSON string and thus needs to unwrapped first.
 The `handleQuery` method processes the query. It is important to note that the query 
 has a starting point. In our case this is the root vertex.
 
-```
-tx.complete(graphQL.execute(query, demoData.getRoot()));
+```java
+ExecutionInput input = new ExecutionInput(query, null, queryJson, demoData.getRoot(), extractVariables(queryJson));
+tx.complete(graphQL.execute(input));
 ```
 
 All GraphQL schema data fetchers can access this root vertex and use it as a starting point for the graph traversals.
