@@ -26,7 +26,7 @@ public class OrientDBTxVertexFactory extends OrientTransactionFactoryImpl implem
 	private int maxRetry = 25;
 
 	public OrientDBTxVertexFactory(OrientGraphFactory factory, Vertx vertx, String... basePaths) {
-		super(factory, basePaths);
+		super(factory, false, basePaths);
 		this.vertx = vertx;
 	}
 

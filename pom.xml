@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.jotschi</groupId>
 	<artifactId>vertx-graphql-example</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 
 	<properties>
 		<vertx.version>3.5.0.Beta1</vertx.version>
 		<orientdb.version>3.0.0m2</orientdb.version>
-		<ferma.orientdb.version>3.0.0-SNAPSHOT</ferma.orientdb.version>
+		<ferma.orientdb.version>3.0.0</ferma.orientdb.version>
 		<graphql-java.version>4.0</graphql-java.version>
 	</properties>
 
@@ -106,29 +106,4 @@
 
 		</plugins>
 	</build>
-
-	<repositories>
-		<repository>
-			<id>maven.gentics.com</id>
-			<name>Gentics Maven Repository</name>
-			<url>https://maven.gentics.com/maven2</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>graphql-snapshot</id>
-			<url>https://dl.bintray.com/andimarek/graphql-java/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
-
 </project>
