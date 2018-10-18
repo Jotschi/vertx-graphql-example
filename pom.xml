@@ -7,7 +7,7 @@
 	<version>0.1.0-SNAPSHOT</version>
 
 	<properties>
-		<vertx.version>3.5.1</vertx.version>
+		<vertx.version>3.5.4</vertx.version>
 		<orientdb.version>3.0.1</orientdb.version>
 		<ferma.orientdb.version>3.0.1-SNAPSHOT</ferma.orientdb.version>
 		<graphql-java.version>8.0</graphql-java.version>
